@@ -600,7 +600,7 @@ state_list = []
 entangle_map = []
 entangle_list = []
 click_count = 0
-cntrl_color_list = ["#156454","#468340","#8FA450","#B1A440"] #più scuro
+cntrl_color_list = ["#156454","#468340","#8FA450","#B1A440"] #darker
 targ_color_list = ["#1E8F78","#5CAD55","#B4CF66","#DBCB4F"]
 
 for i in range(3):
