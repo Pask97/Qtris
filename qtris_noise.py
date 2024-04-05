@@ -206,18 +206,6 @@ def print_cmplx(z):
         return '0'
 
 
-#def bell2text(entangle_state):
-
-#	state_simil = []
-#	for bell in bells():
-#
-#		state_simil.append(simil(entangle_state,bell))
-#
-#	state_simil = np.array(state_simil)
-#	best_bell = np.argmax(state_simil)
-#
-#	return f"Bell {best_bell +1}"
-
 def bell2text(entangle_state):
 
     p00 = entangle_state[0]
@@ -297,7 +285,9 @@ def depolarizing_noise(error,state):
 
 	# # Normalization
 	depolarized_state /= np.linalg.norm(depolarized_state)
-
+    
+    
+	print(depolarized_state[0], depolarized_state)
 	print(depolarized_state[0]**2 + depolarized_state[1]**2)
 
 	return depolarized_state
@@ -313,41 +303,106 @@ def b_click(button):
     indx = int(selected_button[0]) * 3 + int(selected_button[1])
 
     if selected_operation == "Y":
-        state_list[indx] = depolarizing_noise(gate_noise,np.matmul(Y(), state_list[indx]))
-        button.config(text=state2text(state_list[indx]))
-    elif selected_operation == "H":
-        state_list[indx] = depolarizing_noise(gate_noise,np.matmul(H(), state_list[indx]))
-        button.config(text=state2text(state_list[indx]))
-    elif selected_operation == "Z":
-        state_list[indx] = depolarizing_noise(gate_noise,np.matmul(Z(), state_list[indx]))
-        button.config(text=state2text(state_list[indx]))
-    elif selected_operation == "X":
-        state_list[indx] = depolarizing_noise(gate_noise,np.matmul(X(), state_list[indx]))
-        button.config(text=state2text(state_list[indx]))
-        print(state_list[indx][0]**2 + state_list[indx][1]**2)
+        if button.cget('bg') == "SystemButtonFace":
+            state_list[indx] = depolarizing_noise(gate_noise,np.matmul(Y(), state_list[indx]))
+            button.config(text=state2text(state_list[indx]))
+        else:
+            arr_ent_map = np.array(entangle_map)
+            try:
+                pair_index = np.where(arr_ent_map[:, 0] == indx )[0][0]
+                
+            except:
+                pair_index = np.where(arr_ent_map[:, 1] == indx )[0][0]
+                
 
-    elif selected_operation == "CNOT":
+            pair = arr_ent_map[pair_index]
+            state_ent = entangle_list[pair_index]
+            state_res = np.matmul(Y(2), state_ent)
+            entangle_list[pair_index] = state_res
+            buttons[pair[0]].config(text=bell2text(state_res))
+            buttons[pair[1]].config(text=bell2text(state_res))
+    elif selected_operation == "H":
+        if button.cget('bg') == "SystemButtonFace":
+            state_list[indx] = depolarizing_noise(gate_noise,np.matmul(H(), state_list[indx]))
+            button.config(text=state2text(state_list[indx]))
+        else:
+            arr_ent_map = np.array(entangle_map)
+            try:
+                pair_index = np.where(arr_ent_map[:, 0] == indx )[0][0]
+                
+            except:
+                pair_index = np.where(arr_ent_map[:, 1] == indx )[0][0]
+                
+
+            pair = arr_ent_map[pair_index]
+            state_ent = entangle_list[pair_index]
+            state_res = np.matmul(H(2), state_ent)
+            entangle_list[pair_index] = state_res
+            buttons[pair[0]].config(text=bell2text(state_res))
+            buttons[pair[1]].config(text=bell2text(state_res))
+    elif selected_operation == "Z":
+        if button.cget('bg') == "SystemButtonFace":
+            state_list[indx] = depolarizing_noise(gate_noise,np.matmul(Z(), state_list[indx]))
+            button.config(text=state2text(state_list[indx]))
+        else:
+            arr_ent_map = np.array(entangle_map)
+            try:
+                pair_index = np.where(arr_ent_map[:, 0] == indx )[0][0]
+                
+            except:
+                pair_index = np.where(arr_ent_map[:, 1] == indx )[0][0]
+                
+
+            pair = arr_ent_map[pair_index]
+            state_ent = entangle_list[pair_index]
+            state_res = np.matmul(Z(2), state_ent)
+            entangle_list[pair_index] = state_res
+            buttons[pair[0]].config(text=bell2text(state_res))
+            buttons[pair[1]].config(text=bell2text(state_res))
+    elif selected_operation == "X":
+        if button.cget('bg') == "SystemButtonFace":
+            state_list[indx] = depolarizing_noise(gate_noise,np.matmul(X(), state_list[indx]))
+            button.config(text=state2text(state_list[indx]))
+        else:
+            arr_ent_map = np.array(entangle_map)
+            try:
+                pair_index = np.where(arr_ent_map[:, 0] == indx )[0][0]
+                
+            except:
+                pair_index = np.where(arr_ent_map[:, 1] == indx )[0][0]
+                
+
+            pair = arr_ent_map[pair_index]
+            state_ent = entangle_list[pair_index]
+            state_res = np.matmul(X(2), state_ent)
+            entangle_list[pair_index] = state_res
+            buttons[pair[0]].config(text=bell2text(state_res))
+            buttons[pair[1]].config(text=bell2text(state_res))
+
+    elif selected_operation == "Cx":
 
         if click_count == 0 and button.cget('bg') == "SystemButtonFace":
+
             click_count += 1
             indx_control = indx
-            button.config(bg=color_list[len(entangle_map)])
+            button.config(bg=cntrl_color_list[len(entangle_map)])
 
         elif click_count == 1 and button.cget('bg') == "SystemButtonFace":
+
             click_count = 0
             indx_target = indx
-            button.config(bg=color_list[len(entangle_map)])
+            button.config(bg=targ_color_list[len(entangle_map)])
             state_ent = entangle(state_list[indx_control], state_list[indx_target])
             state_res = np.matmul(CNOT(), state_ent)
+
             if disentangle_check(state_res):
             	buttons[indx_control].config(bg="SystemButtonFace")
             	buttons[indx_target].config(bg="SystemButtonFace")
             else:
 	            entangle_map.append((indx_control,indx_target))
 	            entangle_list.append(state_res)
-	            buttons[indx_control].config(text="C\n" + bell2text(state_res),font=('Tahoma',10))
-	            buttons[indx_target].config(text="T\n" + bell2text(state_res))
-
+	            buttons[indx_control].config(text= bell2text(state_res))
+	            buttons[indx_target].config(text= bell2text(state_res))
 
         elif click_count == 0 and button.cget('bg') != "SystemButtonFace":
 
@@ -362,10 +417,10 @@ def b_click(button):
         	pair = arr_ent_map[pair_index]
         	state_ent = entangle_list[pair_index]
         	state_res = np.matmul(CNOT(), state_ent)
-        	print(state_res)
+
         	if not first_ctrl:
-        		state_res[1] , state_res[2] = state_res[2], state_res[1]        	
-        	print(state_res)
+        		state_res[1] , state_res[2] = state_res[2], state_res[1]
+
         	if disentangle_check(state_res):
 	        	state_ctrl, state_targ = disentangle(state_res)
 	        	del entangle_map[pair_index]
@@ -376,8 +431,7 @@ def b_click(button):
 	        	buttons[pair[1]].config(text=state2text(state_targ))
 	        	buttons[pair[0]].config(bg="SystemButtonFace")
 	        	buttons[pair[1]].config(bg="SystemButtonFace")
-	        else:
-	        	entangle_list[pair_index] = state_res
+
 
 
 def measure():
@@ -550,12 +604,12 @@ root = tk.Tk()
 root.title("Button Operation Selector")
 
 operation_var = tk.StringVar()
-operation_var.set("X")
+operation_var.set("I")
 
 operation_label = tk.Label(root, text="Card:")
 operation_label.grid(row=0, column=0, padx=10, pady=5)
 
-operation_dropdown = ttk.Combobox(root, textvariable=operation_var, values=["Y","H","Z","X","CNOT","Cx"])
+operation_dropdown = ttk.Combobox(root, textvariable=operation_var, values=["I","Y","H","Z","X","Cx"])
 operation_dropdown.grid(row=0, column=1, padx=10, pady=5)
 
 buttons = []
@@ -563,17 +617,19 @@ state_list = []
 entangle_map = []
 entangle_list = []
 click_count = 0
-color_list = ["#1E8F78","#5CAD55","#B4CF66","#DBCB4F"]
+cntrl_color_list = ["#156454","#468340","#8FA450","#B1A440"] #darker
+targ_color_list = ["#1E8F78","#5CAD55","#B4CF66","#DBCB4F"]
 
 for i in range(3):
     for j in range(3):
-        button = Button(root, text='', font=("Tahoma", 20), height=3, width=6, bg="SystemButtonFace",name=f'{i}{j}')
+        button = Button(root, text='', font=("Helvetica", 20), height=3, width=6, bg="SystemButtonFace",name=f'{i}{j}')
         state = random_state()
         state_list.append(state)
         button['text'] = state2text(state) 
         button.grid(row=i+1, column=j, padx=5, pady=5)
         button.config(command=lambda b=button: b_click(b))
         buttons.append(button)
+
 
 # Add a spinbox for selecting a number
 spinbox_var = tk.StringVar()
