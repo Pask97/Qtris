@@ -1,620 +1,223 @@
-import tkinter as tk
-from tkinter import Button, ttk,messagebox
-import random
-import numpy as np
+from tkinter import *
+from tkinter import messagebox
 
-def I(qnum=None):
-    
-    matrix = np.array([[1,0],
-                      [0,1]])
+root = Tk()
+root.title('Codemy.com - Tic-Tac-Toe')
+#root.geometry("1200x710")
 
-    if qnum == None:
-        
-        pass
-        
-    elif qnum == 2:
-        
-        matrix = np.kron(matrix,matrix)
-    
-    return matrix
+# X starts so true
+clicked = True
+count = 0
 
-def Z(qnum=None):
-    
-    matrix = np.array([[1,0],
-                      [0,-1]])
-
-    if qnum == None:
-        
-        pass
-        
-    elif qnum == 2:
-        
-        matrix = np.kron(matrix,I())
-    
-    return matrix
-
-def Y(qnum=None):
-    
-    matrix = np.array([[0,-1j],
-                      [1j,0]])
-
-    if qnum == None:
-        
-        pass
-        
-    elif qnum == 2:
-        
-        matrix = np.kron(matrix,I())
-    
-    return matrix
-
-
-def X(qnum=None):
-    
-    matrix = np.array([[0,1],
-                      [1,0]])
-    if qnum == None:
-        
-        pass
-        
-    elif qnum == 2:
-        
-        matrix = np.kron(matrix,I())
-    
-    return matrix
-
-def H(qnum=None):
-    
-    matrix = np.array([[1,1],[1,-1]]/np.sqrt(2))
-    
-    if qnum == None:
-        
-        pass
-    elif qnum == 2:
-        
-        matrix = np.kron(matrix,I())
-        
-    
-    return matrix
-
-def CZ():
-    
-    matrix = np.array([[1,0,0,0],
-                       [0,1,0,0],
-                       [0,0,1,0],
-                       [0,0,0,-1]])
-                       
-    return matrix
-
-def CNOT():
-    
-    matrix = np.array([[1,0,0,0],
-                       [0,1,0,0],
-                       [0,0,0,1],
-                       [0,0,1,0]])
-                       
-    return matrix
-
-def simil(arr1, arr2):
-
-	# Similarity between two array in input
-
-    arr1 = np.array(arr1)
-    arr2 = np.array(arr2)
-    
-    dot_product = np.dot(arr1, arr2)
-    
-    magnitude_arr1 = np.linalg.norm(arr1)
-    magnitude_arr2 = np.linalg.norm(arr2)
-    
-    similarity = dot_product / (magnitude_arr1 * magnitude_arr2)
-    
-    return similarity
-
-def entangle(state1,state2):
-
-	return np.kron(state1,state2)
-
-def disentangle_check(state):
-
-    if state[0]==0 and state[1]==0:
-        return True
-
-    elif state[0]==0 and state[2] == 0:
-    	return True
-    elif state[1]==0 and state[3] == 0:
-    	return True
-
-    elif state[2]==0 and state[3] == 0:
-    	return True
-    else:
-        return False
-
-def disentangle(state):
-    for i in range(2):
-        if state[i] * state[i + 2] < 0:
-            sign = False  
-        sign = True
-
-    if state[0]==0 and state[1]==0 and sign:
-        return  np.array([0., 1.]),np.array([1, 1]) / np.sqrt(2)
-    elif state[0]==0 and state[1]==0 and not sign:
-        return np.array([0., 1.]),np.array([1, -1]) / np.sqrt(2)
-
-    elif state[0]==0 and state[2] == 0 and sign:
-    	return  np.array([1, 1]) / np.sqrt(2),np.array([0., 1.])
-    elif state[0]==0 and state[2] == 0 and not sign:
-    	return  np.array([1, -1]) / np.sqrt(2),np.array([0., 1.])
-
-    elif state[1]==0 and state[3] == 0 and sign:
-    	return  np.array([1, 1]) / np.sqrt(2),np.array([0., 1.])
-    elif state[1]==0 and state[3] == 0 and not sign:
-    	return  np.array([1, 1]) / np.sqrt(2),np.array([0., 1.])
-
-    elif state[2]==0 and state[3] == 0 and sign:
-    	return  np.array([1.,0.]) , np.array([1, 1]) / np.sqrt(2)
-    elif state[2]==0 and state[3] == 0 and not sign:
-    	return  np.array([1.,0.]) , np.array([1, -1]) / np.sqrt(2)
-
-    else:
-        print('The input state is an entangled state that cannot be separated')
-
+# disable all the buttons
 def disable_all_buttons():
-    for button in buttons:
-        button.config(state="disabled")
-
-def bell1():
-
-	state = np.array([1,0,0,1])/np.sqrt(2)
-	return state
-
-def bell3():
-
-	state = np.array([1,0,0,-1])/np.sqrt(2)
-	return state
-
-def bell2():
-
-	state = np.array([0,1,1,0])/np.sqrt(2)
-	return state
-
-def bell4():
-
-	state = np.array([0,1,-1,0])/np.sqrt(2)
-	return state
-
-def bells():
-
-	states = [bell1(),bell2(),bell3(),bell4()]
-
-	return states
-
-
-def print_cmplx(z):
-    
-    re = np.real(z)
-    im = np.imag(z)
-    
-    if re != 0 and im == 0:
-        
-        return f' {re:.1f}'
-    
-    elif re == 0 and im != 0:
-        
-        return f'j{im:.1f}'
-    elif re == 0 and im == 0:
-        
-        return '0'
-
-
-def bell2text(entangle_state):
-
-    p00 = entangle_state[0]
-    p01 = entangle_state[1]
-    p10 = entangle_state[2]
-    p11 = entangle_state[3]
-
-    return print_cmplx(p00) + ';' + print_cmplx(p01) + ';\n' + print_cmplx(p10) + ';' + print_cmplx(p11) 
-
-def b_click(button):
-    global click_count, indx_control, indx_target,color_list,entangle_map,entangle_list
-    selected_operation = operation_var.get()
-    selected_button = button.winfo_name()
-    button_text = button.cget("text")
-    indx = int(selected_button[0]) * 3 + int(selected_button[1])
-
-    if selected_operation == "Y":
-        if button.cget('bg') == "SystemButtonFace":
-            state_list[indx] = np.matmul(Y(), state_list[indx])
-            button.config(text=state2text(state_list[indx]))
-        else:
-            arr_ent_map = np.array(entangle_map)
-            try:
-                pair_index = np.where(arr_ent_map[:, 0] == indx )[0][0]
-                
-            except:
-                pair_index = np.where(arr_ent_map[:, 1] == indx )[0][0]
-                
-
-            pair = arr_ent_map[pair_index]
-            state_ent = entangle_list[pair_index]
-            state_res = np.matmul(Y(2), state_ent)
-            entangle_list[pair_index] = state_res
-            buttons[pair[0]].config(text=bell2text(state_res))
-            buttons[pair[1]].config(text=bell2text(state_res))
-
-    elif selected_operation == "H":
-        if button.cget('bg') == "SystemButtonFace":
-            state_list[indx] = np.matmul(H(), state_list[indx])
-            button.config(text=state2text(state_list[indx]))
-        else:
-            arr_ent_map = np.array(entangle_map)
-            try:
-                pair_index = np.where(arr_ent_map[:, 0] == indx )[0][0]
-                
-            except:
-                pair_index = np.where(arr_ent_map[:, 1] == indx )[0][0]
-                
-
-            pair = arr_ent_map[pair_index]
-            state_ent = entangle_list[pair_index]
-            state_res = np.matmul(H(2), state_ent)
-            entangle_list[pair_index] = state_res
-            buttons[pair[0]].config(text=bell2text(state_res))
-            buttons[pair[1]].config(text=bell2text(state_res))
-
-    elif selected_operation == "Z":
-        
-        if button.cget('bg') == "SystemButtonFace":
-            state_list[indx] = np.matmul(Z(), state_list[indx])
-            button.config(text=state2text(state_list[indx]))
-        else:
-            arr_ent_map = np.array(entangle_map)
-            try:
-                pair_index = np.where(arr_ent_map[:, 0] == indx )[0][0]
-                
-            except:
-                pair_index = np.where(arr_ent_map[:, 1] == indx )[0][0]
-                
-
-            pair = arr_ent_map[pair_index]
-            state_ent = entangle_list[pair_index]
-            state_res = np.matmul(Z(2), state_ent)
-            entangle_list[pair_index] = state_res
-            buttons[pair[0]].config(text=bell2text(state_res))
-            buttons[pair[1]].config(text=bell2text(state_res))
-
-    elif selected_operation == "X":
-
-        if button.cget('bg') == "SystemButtonFace":
-            state_list[indx] = np.matmul(X(), state_list[indx])
-            button.config(text=state2text(state_list[indx]))
-        else:
-            arr_ent_map = np.array(entangle_map)
-            try:
-                pair_index = np.where(arr_ent_map[:, 0] == indx )[0][0]
-                
-            except:
-                pair_index = np.where(arr_ent_map[:, 1] == indx )[0][0]
-                
-
-            pair = arr_ent_map[pair_index]
-            state_ent = entangle_list[pair_index]
-            state_res = np.matmul(X(2), state_ent)
-            entangle_list[pair_index] = state_res
-            buttons[pair[0]].config(text=bell2text(state_res))
-            buttons[pair[1]].config(text=bell2text(state_res))
-
-
-    elif selected_operation == "Cx":
-
-        if click_count == 0 and button.cget('bg') == "SystemButtonFace":
-
-            click_count += 1
-            indx_control = indx
-            button.config(bg=cntrl_color_list[len(entangle_map)])
-
-        elif click_count == 1 and button.cget('bg') == "SystemButtonFace":
-
-            click_count = 0
-            indx_target = indx
-            button.config(bg=targ_color_list[len(entangle_map)])
-            state_ent = entangle(state_list[indx_control], state_list[indx_target])
-            state_res = np.matmul(CNOT(), state_ent)
-
-            if disentangle_check(state_res):
-            	buttons[indx_control].config(bg="SystemButtonFace")
-            	buttons[indx_target].config(bg="SystemButtonFace")
-            else:
-	            entangle_map.append((indx_control,indx_target))
-	            entangle_list.append(state_res)
-	            buttons[indx_control].config(text= bell2text(state_res))
-	            buttons[indx_target].config(text= bell2text(state_res))
-
-        elif click_count == 0 and button.cget('bg') != "SystemButtonFace":
-
-        	arr_ent_map = np.array(entangle_map)
-        	try:
-        		pair_index = np.where(arr_ent_map[:, 0] == indx )[0][0]
-        		first_ctrl = True
-        	except:
-        		pair_index = np.where(arr_ent_map[:, 1] == indx )[0][0]
-        		first_ctrl = False
-
-        	pair = arr_ent_map[pair_index]
-        	state_ent = entangle_list[pair_index]
-        	state_res = np.matmul(CNOT(), state_ent)
-
-        	if not first_ctrl:
-        		state_res[1] , state_res[2] = state_res[2], state_res[1]
-
-        	if disentangle_check(state_res):
-	        	state_ctrl, state_targ = disentangle(state_res)
-	        	del entangle_map[pair_index]
-	        	del entangle_list[pair_index]
-	        	state_list[pair[0]] = state_ctrl
-	        	state_list[pair[1]] = state_targ
-	        	buttons[pair[0]].config(text=state2text(state_ctrl))
-	        	buttons[pair[1]].config(text=state2text(state_targ))
-	        	buttons[pair[0]].config(bg="SystemButtonFace")
-	        	buttons[pair[1]].config(bg="SystemButtonFace")
-
-
-def random_state():
-
-	rand_num = random.randint(0,3)
-	if rand_num == 0:
-		result = np.array([1.,0.])
-	elif rand_num == 1:
-		result = np.array([0.,1.])
-	elif rand_num == 2:
-		result = np.array([1/np.sqrt(2),1/np.sqrt(2)])
-	elif rand_num == 3:
-		result = np.array([1/np.sqrt(2),-1/np.sqrt(2)])
-
-
-	return result
-
-def cmplx_print(a,rnd=2):
-    
-    re = np.real(a)
-    im = np.imag(a)
-    
-    if re !=0. and im == 0.:
-        
-        string = f'{round(re,2)}'
-    elif re ==0. and im != 0.:
-        
-        string = f'j{round(im,2)}'
-    elif re !=0. and im != 0.:
-        
-        string = f'{round(re,2)} + j {round(im,2)}'
-    elif re ==0. and im ==0.:
-        
-        string = '0'
-    
-    return string
-
-
-def state2text(array):
-	result=f'{cmplx_print(array[0])}\n{cmplx_print(array[1])}'
-	return result
-
-def state_toss(prob_ground):
-    toss = random.random()
-    
-    if toss < prob_ground:
-        return 0
-    else:
-        return 1
-
-def entangle_state_toss(entangle_state):
-
-	# (|00>, |01>, |10>, |11>) |Control, Target>
-    entangle_state = abs(entangle_state)
-    rand_num = random.uniform(0, sum(entangle_state))
-    
-    cumulative_sum = 0
-    for i, coeff in enumerate(entangle_state):
-        cumulative_sum += coeff
-        if rand_num <= cumulative_sum:
-            return i
-
-def measure():
-
-	# Single qubit 
-
-	for i in range(3):
-		for j in range(3):
-			indx = int(i)*3 + int(j)
-			if buttons[indx].cget('bg') == "SystemButtonFace":
-				p0 = state_list[indx][0]**2
-				state_list[indx] = state_toss(p0)
-				if state_list[indx] == 0:
-					buttons[indx]['text'] = '0'
-				elif state_list[indx] == 1:
-					buttons[indx]['text'] = '1'
-
-	# Entangled qubit
-
-	for pair,entangle_state in zip(entangle_map,entangle_list):
-
-		two_qubit_state = entangle_state_toss(entangle_state)
-
-		if two_qubit_state == 0:
-
-			buttons[pair[0]].config(text='0') 
-			buttons[pair[1]].config(text='0')
-			buttons[pair[0]].config(bg="SystemButtonFace") 
-			buttons[pair[1]].config(bg="SystemButtonFace")
-		elif two_qubit_state == 1:
-
-			buttons[pair[0]].config(text='0') 
-			buttons[pair[1]].config(text='1')
-			buttons[pair[0]].config(bg="SystemButtonFace") 
-			buttons[pair[1]].config(bg="SystemButtonFace")
-		elif two_qubit_state == 2:
-
-			buttons[pair[0]].config(text='1') 
-			buttons[pair[1]].config(text='0')
-			buttons[pair[0]].config(bg="SystemButtonFace") 
-			buttons[pair[1]].config(bg="SystemButtonFace")
-		elif two_qubit_state == 3:
-
-			buttons[pair[0]].config(text='1') 
-			buttons[pair[1]].config(text='1')
-			buttons[pair[0]].config(bg="SystemButtonFace") 
-			buttons[pair[1]].config(bg="SystemButtonFace")
-
-	checkwhowon()
-	disable_all_buttons()
-
-
-def checkwhowon():
-	points_gnd = 0
-	points_exc = 0
-
-	if buttons[0]["text"] == "0" and buttons[1]["text"] == "0" and buttons[2]["text"]  == "0":
-		buttons[0].config(bg="red")
-		buttons[1].config(bg="red")
-		buttons[2].config(bg="red")
-		points_gnd += 1
-
-	if buttons[3]["text"] == "0" and buttons[4]["text"] == "0" and buttons[5]["text"]  == "0":
-		buttons[3].config(bg="red")
-		buttons[4].config(bg="red")
-		buttons[5].config(bg="red")
-		points_gnd += 1
-
-	if buttons[6]["text"] == "0" and buttons[7]["text"] == "0" and buttons[8]["text"]  == "0":
-		buttons[6].config(bg="red")
-		buttons[7].config(bg="red")
-		buttons[8].config(bg="red")
-		points_gnd += 1
-
-	if buttons[0]["text"] == "0" and buttons[3]["text"] == "0" and buttons[6]["text"]  == "0":
-		buttons[0].config(bg="red")
-		buttons[3].config(bg="red")
-		buttons[6].config(bg="red")
-		points_gnd += 1
-
-	if buttons[1]["text"] == "0" and buttons[4]["text"] == "0" and buttons[7]["text"]  == "0":
-		buttons[1].config(bg="red")
-		buttons[4].config(bg="red")
-		buttons[7].config(bg="red")
-		points_gnd += 1
-
-	if buttons[2]["text"] == "0" and buttons[5]["text"] == "0" and buttons[8]["text"]  == "0":
-		buttons[2].config(bg="red")
-		buttons[5].config(bg="red")
-		buttons[8].config(bg="red")
-		points_gnd += 1
-
-	if buttons[0]["text"] == "0" and buttons[4]["text"] == "0" and buttons[8]["text"]  == "0":
-		buttons[0].config(bg="red")
-		buttons[4].config(bg="red")
-		buttons[8].config(bg="red")
-		points_gnd += 1
-
-	if buttons[2]["text"] == "0" and buttons[4]["text"] == "0" and buttons[6]["text"]  == "0":
-		buttons[2].config(bg="red")
-		buttons[4].config(bg="red")
-		buttons[6].config(bg="red")
-		points_gnd += 1
-
-	#### Excited state
-	if buttons[0]["text"] == "1" and buttons[1]["text"] == "1" and buttons[2]["text"]  == "1":
-		buttons[0].config(bg="blue")
-		buttons[1].config(bg="blue")
-		buttons[2].config(bg="blue")
-		points_exc += 1
-
-	if buttons[3]["text"] == "1" and buttons[4]["text"] == "1" and buttons[5]["text"]  == "1":
-		buttons[3].config(bg="blue")
-		buttons[4].config(bg="blue")
-		buttons[5].config(bg="blue")
-		points_exc += 1
-
-	if buttons[6]["text"] == "1" and buttons[7]["text"] == "1" and buttons[8]["text"]  == "1":
-		buttons[6].config(bg="blue")
-		buttons[7].config(bg="blue")
-		buttons[8].config(bg="blue")
-		points_exc += 1
-
-	if buttons[0]["text"] == "1" and buttons[3]["text"] == "1" and buttons[6]["text"]  == "1":
-		buttons[0].config(bg="blue")
-		buttons[3].config(bg="blue")
-		buttons[6].config(bg="blue")
-		points_exc += 1
-
-	if buttons[1]["text"] == "1" and buttons[4]["text"] == "1" and buttons[7]["text"]  == "1":
-		buttons[1].config(bg="blue")
-		buttons[4].config(bg="blue")
-		buttons[7].config(bg="blue")
-		points_exc += 1
-
-	if buttons[2]["text"] == "1" and buttons[5]["text"] == "1" and buttons[8]["text"]  == "1":
-		buttons[2].config(bg="blue")
-		buttons[5].config(bg="blue")
-		buttons[8].config(bg="blue")
-		points_exc += 1
-
-	if buttons[0]["text"] == "1" and buttons[4]["text"] == "1" and buttons[8]["text"]  == "1":
-		buttons[0].config(bg="blue")
-		buttons[4].config(bg="blue")
-		buttons[8].config(bg="blue")
-		points_exc += 1
-
-	if buttons[2]["text"] == "1" and buttons[4]["text"] == "1" and buttons[6]["text"]  == "1":
-		buttons[2].config(bg="blue")
-		buttons[4].config(bg="blue")
-		buttons[6].config(bg="blue")
-		points_exc += 1
+	b1.config(state=DISABLED)
+	b2.config(state=DISABLED)
+	b3.config(state=DISABLED)
+	b4.config(state=DISABLED)
+	b5.config(state=DISABLED)
+	b6.config(state=DISABLED)
+	b7.config(state=DISABLED)
+	b8.config(state=DISABLED)
+	b9.config(state=DISABLED)
+
+# Check to see if someone won
+def checkifwon():
+	global winner
+	winner = False
+
+	if b1["text"] == "X" and b2["text"] == "X" and b3["text"]  == "X":
+		b1.config(bg="red")
+		b2.config(bg="red")
+		b3.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  X Wins!!")
+		disable_all_buttons()
+	elif b4["text"] == "X" and b5["text"] == "X" and b6["text"]  == "X":
+		b4.config(bg="red")
+		b5.config(bg="red")
+		b6.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  X Wins!!")
+		disable_all_buttons()
+
+	elif b7["text"] == "X" and b8["text"] == "X" and b9["text"]  == "X":
+		b7.config(bg="red")
+		b8.config(bg="red")
+		b9.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  X Wins!!")
+		disable_all_buttons()
+
+	elif b1["text"] == "X" and b4["text"] == "X" and b7["text"]  == "X":
+		b1.config(bg="red")
+		b4.config(bg="red")
+		b7.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  X Wins!!")
+		disable_all_buttons()
+
+	elif b2["text"] == "X" and b5["text"] == "X" and b8["text"]  == "X":
+		b2.config(bg="red")
+		b5.config(bg="red")
+		b8.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  X Wins!!")
+		disable_all_buttons()
+
+	elif b3["text"] == "X" and b6["text"] == "X" and b9["text"]  == "X":
+		b3.config(bg="red")
+		b6.config(bg="red")
+		b9.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  X Wins!!")
+		disable_all_buttons()
+
+	elif b1["text"] == "X" and b5["text"] == "X" and b9["text"]  == "X":
+		b1.config(bg="red")
+		b5.config(bg="red")
+		b9.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  X Wins!!")
+		disable_all_buttons()
+
+	elif b3["text"] == "X" and b5["text"] == "X" and b7["text"]  == "X":
+		b3.config(bg="red")
+		b5.config(bg="red")
+		b7.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  X Wins!!")
+		disable_all_buttons()
+
+	#### CHECK FOR O's Win
+	elif b1["text"] == "O" and b2["text"] == "O" and b3["text"]  == "O":
+		b1.config(bg="red")
+		b2.config(bg="red")
+		b3.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  O Wins!!")
+		disable_all_buttons()
+	elif b4["text"] == "O" and b5["text"] == "O" and b6["text"]  == "O":
+		b4.config(bg="red")
+		b5.config(bg="red")
+		b6.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  O Wins!!")
+		disable_all_buttons()
+
+	elif b7["text"] == "O" and b8["text"] == "O" and b9["text"]  == "O":
+		b7.config(bg="red")
+		b8.config(bg="red")
+		b9.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  O Wins!!")
+		disable_all_buttons()
+
+	elif b1["text"] == "O" and b4["text"] == "O" and b7["text"]  == "O":
+		b1.config(bg="red")
+		b4.config(bg="red")
+		b7.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  O Wins!!")
+		disable_all_buttons()
+
+	elif b2["text"] == "O" and b5["text"] == "O" and b8["text"]  == "O":
+		b2.config(bg="red")
+		b5.config(bg="red")
+		b8.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  O Wins!!")
+		disable_all_buttons()
+
+	elif b3["text"] == "O" and b6["text"] == "O" and b9["text"]  == "O":
+		b3.config(bg="red")
+		b6.config(bg="red")
+		b9.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  O Wins!!")
+		disable_all_buttons()
+
+	elif b1["text"] == "O" and b5["text"] == "O" and b9["text"]  == "O":
+		b1.config(bg="red")
+		b5.config(bg="red")
+		b9.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  O Wins!!")
+		disable_all_buttons()
+
+	elif b3["text"] == "O" and b5["text"] == "O" and b7["text"]  == "O":
+		b3.config(bg="red")
+		b5.config(bg="red")
+		b7.config(bg="red")
+		winner = True
+		messagebox.showinfo("Tic Tac Toe", "CONGRATULATIONS!  O Wins!!")
+		disable_all_buttons()
 
 	# Check if tie
-	if points_gnd > points_exc:
-		messagebox.showinfo("Qtris", f"Ground state wins with {points_gnd} points over {points_exc}!")
+	if count == 9 and winner == False:
+		messagebox.showinfo("Tic Tac Toe", "It's A Tie!\n No One Wins!")
 		disable_all_buttons()
-	elif points_gnd < points_exc:
-		messagebox.showinfo("Qtris", f"Excited state wins with {points_exc} points over {points_gnd}!")
-		disable_all_buttons()
-	elif points_gnd == points_exc:
-		messagebox.showinfo("Qtris", f"It is a tie with {points_gnd} points to {points_exc}!")
-		disable_all_buttons()
+				
+# Button clicked function
+def b_click(b):
+	global clicked, count
+
+	if b["text"] == " " and clicked == True:
+		b["text"] = "a,b\nc,d"
+		clicked = False
+		count += 1
+		checkifwon()
+	elif b["text"] == " " and clicked == False:
+		b["text"] = "O"
+		clicked = True
+		count += 1
+		checkifwon()
+	else:
+		messagebox.showerror("Tic Tac Toe", "Hey! That box has already been selected\nPick Another Box..." )
+
+# Start the game over!
+def reset():
+	global b1, b2, b3, b4, b5, b6, b7, b8, b9
+	global clicked, count
+	clicked = True
+	count = 0
 
 
-root = tk.Tk()
-root.title("Button Operation Selector")
+	# Build our buttons
+	b1 = Button(root, text=" ", font=("Helvetica", 20), height=3, width=6, bg="#156454", command=lambda: b_click(b1))
+	b2 = Button(root, text=" ", font=("Helvetica", 20), height=3, width=6, bg="#468340", command=lambda: b_click(b2))
+	b3 = Button(root, text=" ", font=("Helvetica", 20), height=3, width=6, bg="#8FA450", command=lambda: b_click(b3))
 
-operation_var = tk.StringVar()
-operation_var.set("I")
+	b4 = Button(root, text=" ", font=("Helvetica", 20), height=3, width=6, bg="#B1A440", command=lambda: b_click(b4))
+	b5 = Button(root, text=" ", font=("Helvetica", 20), height=3, width=6, bg="#1E8F78", command=lambda: b_click(b5))
+	b6 = Button(root, text=" ", font=("Helvetica", 20), height=3, width=6, bg="#5CAD55", command=lambda: b_click(b6))
 
-operation_label = tk.Label(root, text="Card:")
-operation_label.grid(row=0, column=0, padx=10, pady=5)
+	b7 = Button(root, text=" ", font=("Helvetica", 20), height=3, width=6, bg="#B4CF66", command=lambda: b_click(b7))
+	b8 = Button(root, text=" ", font=("Helvetica", 20), height=3, width=6, bg="#DBCB4F", command=lambda: b_click(b8))
+	b9 = Button(root, text=" ", font=("Helvetica", 20), height=3, width=6, bg="#95A3B3", command=lambda: b_click(b9))
 
-operation_dropdown = ttk.Combobox(root, textvariable=operation_var, values=["I","Y","H","Z","X","Cx"])
-operation_dropdown.grid(row=0, column=1, padx=10, pady=5)
+	# Grid our buttons to the screen
+	b1.grid(row=0, column=0)
+	b2.grid(row=0, column=1)
+	b3.grid(row=0, column=2)
 
-buttons = []
-state_list = []
-entangle_map = []
-entangle_list = []
-click_count = 0
-cntrl_color_list = ["#156454","#468340","#8FA450","#B1A440"] #darker
-targ_color_list = ["#1E8F78","#5CAD55","#B4CF66","#DBCB4F"]
+	b4.grid(row=1, column=0)
+	b5.grid(row=1, column=1)
+	b6.grid(row=1, column=2)
 
-for i in range(3):
-    for j in range(3):
-        button = Button(root, text='', font=("Helvetica", 20), height=3, width=6, bg="SystemButtonFace",name=f'{i}{j}')
-        state = random_state()
-        state_list.append(state)
-        button['text'] = state2text(state) 
-        button.grid(row=i+1, column=j, padx=5, pady=5)
-        button.config(command=lambda b=button: b_click(b))
-        buttons.append(button)
+	b7.grid(row=2, column=0)
+	b8.grid(row=2, column=1)
+	b9.grid(row=2, column=2)
 
-# Add a button to trigger the measurement
-measure_button = Button(root, text="Measure", command=measure)
-measure_button.grid(row=4, columnspan=3, pady=10)
+# Create menue
+my_menu = Menu(root)
+root.config(menu=my_menu)
+
+# Create Options Menu
+options_menu = Menu(my_menu, tearoff=False)
+my_menu.add_cascade(label="Options", menu=options_menu)
+options_menu.add_command(label="Rest Game", command=reset)
+
+reset()
 
 root.mainloop()
