@@ -285,10 +285,6 @@ def depolarizing_noise(error,state):
 
 	# # Normalization
 	depolarized_state /= np.linalg.norm(depolarized_state)
-    
-    
-	print(depolarized_state[0], depolarized_state)
-	print(depolarized_state[0]**2 + depolarized_state[1]**2)
 
 	return depolarized_state
 
@@ -303,7 +299,7 @@ def b_click(button):
     indx = int(selected_button[0]) * 3 + int(selected_button[1])
 
     if selected_operation == "Y":
-        if button.cget('bg') == "SystemButtonFace":
+        if button.cget('bg') == "#95A3B3":
             state_list[indx] = depolarizing_noise(gate_noise,np.matmul(Y(), state_list[indx]))
             button.config(text=state2text(state_list[indx]))
         else:
@@ -322,7 +318,7 @@ def b_click(button):
             buttons[pair[0]].config(text=bell2text(state_res))
             buttons[pair[1]].config(text=bell2text(state_res))
     elif selected_operation == "H":
-        if button.cget('bg') == "SystemButtonFace":
+        if button.cget('bg') == "#95A3B3":
             state_list[indx] = depolarizing_noise(gate_noise,np.matmul(H(), state_list[indx]))
             button.config(text=state2text(state_list[indx]))
         else:
@@ -341,7 +337,7 @@ def b_click(button):
             buttons[pair[0]].config(text=bell2text(state_res))
             buttons[pair[1]].config(text=bell2text(state_res))
     elif selected_operation == "Z":
-        if button.cget('bg') == "SystemButtonFace":
+        if button.cget('bg') == "#95A3B3":
             state_list[indx] = depolarizing_noise(gate_noise,np.matmul(Z(), state_list[indx]))
             button.config(text=state2text(state_list[indx]))
         else:
@@ -360,7 +356,7 @@ def b_click(button):
             buttons[pair[0]].config(text=bell2text(state_res))
             buttons[pair[1]].config(text=bell2text(state_res))
     elif selected_operation == "X":
-        if button.cget('bg') == "SystemButtonFace":
+        if button.cget('bg') == "#95A3B3":
             state_list[indx] = depolarizing_noise(gate_noise,np.matmul(X(), state_list[indx]))
             button.config(text=state2text(state_list[indx]))
         else:
@@ -381,13 +377,13 @@ def b_click(button):
 
     elif selected_operation == "Cx":
 
-        if click_count == 0 and button.cget('bg') == "SystemButtonFace":
+        if click_count == 0 and button.cget('bg') == "#95A3B3":
 
             click_count += 1
             indx_control = indx
             button.config(bg=cntrl_color_list[len(entangle_map)])
 
-        elif click_count == 1 and button.cget('bg') == "SystemButtonFace":
+        elif click_count == 1 and button.cget('bg') == "#95A3B3":
 
             click_count = 0
             indx_target = indx
@@ -396,15 +392,15 @@ def b_click(button):
             state_res = np.matmul(CNOT(), state_ent)
 
             if disentangle_check(state_res):
-            	buttons[indx_control].config(bg="SystemButtonFace")
-            	buttons[indx_target].config(bg="SystemButtonFace")
+            	buttons[indx_control].config(bg="#95A3B3")
+            	buttons[indx_target].config(bg="#95A3B3")
             else:
 	            entangle_map.append((indx_control,indx_target))
 	            entangle_list.append(state_res)
 	            buttons[indx_control].config(text= bell2text(state_res))
 	            buttons[indx_target].config(text= bell2text(state_res))
 
-        elif click_count == 0 and button.cget('bg') != "SystemButtonFace":
+        elif click_count == 0 and button.cget('bg') != "#95A3B3":
 
         	arr_ent_map = np.array(entangle_map)
         	try:
@@ -429,8 +425,8 @@ def b_click(button):
 	        	state_list[pair[1]] = state_targ
 	        	buttons[pair[0]].config(text=state2text(state_ctrl))
 	        	buttons[pair[1]].config(text=state2text(state_targ))
-	        	buttons[pair[0]].config(bg="SystemButtonFace")
-	        	buttons[pair[1]].config(bg="SystemButtonFace")
+	        	buttons[pair[0]].config(bg="#95A3B3")
+	        	buttons[pair[1]].config(bg="#95A3B3")
 
 
 
@@ -441,7 +437,7 @@ def measure():
 	for i in range(3):
 		for j in range(3):
 			indx = int(i)*3 + int(j)
-			if buttons[indx].cget('bg') == "SystemButtonFace":
+			if buttons[indx].cget('bg') == "#95A3B3":
 				p0 = state_list[indx][0]**2
 				state_list[indx] = state_toss(p0)
 				if state_list[indx] == 0:
@@ -453,35 +449,32 @@ def measure():
 
 	for pair,entangle_state in zip(entangle_map,entangle_list):
 
-		print(entangle_state)
 		two_qubit_state = entangle_state_toss(entangle_state)
-
-		print(two_qubit_state)
 
 		if two_qubit_state == 0:
 
 			buttons[pair[0]].config(text='0') 
 			buttons[pair[1]].config(text='0')
-			buttons[pair[0]].config(bg="SystemButtonFace") 
-			buttons[pair[1]].config(bg="SystemButtonFace")
+			buttons[pair[0]].config(bg="#95A3B3") 
+			buttons[pair[1]].config(bg="#95A3B3")
 		elif two_qubit_state == 1:
 
 			buttons[pair[0]].config(text='0') 
 			buttons[pair[1]].config(text='1')
-			buttons[pair[0]].config(bg="SystemButtonFace") 
-			buttons[pair[1]].config(bg="SystemButtonFace")
+			buttons[pair[0]].config(bg="#95A3B3") 
+			buttons[pair[1]].config(bg="#95A3B3")
 		elif two_qubit_state == 2:
 
 			buttons[pair[0]].config(text='1') 
 			buttons[pair[1]].config(text='0')
-			buttons[pair[0]].config(bg="SystemButtonFace") 
-			buttons[pair[1]].config(bg="SystemButtonFace")
+			buttons[pair[0]].config(bg="#95A3B3") 
+			buttons[pair[1]].config(bg="#95A3B3")
 		elif two_qubit_state == 3:
 
 			buttons[pair[0]].config(text='1') 
 			buttons[pair[1]].config(text='1')
-			buttons[pair[0]].config(bg="SystemButtonFace") 
-			buttons[pair[1]].config(bg="SystemButtonFace")
+			buttons[pair[0]].config(bg="#95A3B3") 
+			buttons[pair[1]].config(bg="#95A3B3")
 
 	checkwhowon()
 	disable_all_buttons()
@@ -492,101 +485,102 @@ def checkwhowon():
 	points_exc = 0
 
 	if buttons[0]["text"] == "0" and buttons[1]["text"] == "0" and buttons[2]["text"]  == "0":
-		buttons[0].config(bg="red")
-		buttons[1].config(bg="red")
-		buttons[2].config(bg="red")
+		buttons[0].config(bg="black", fg='white')
+		buttons[1].config(bg="black", fg='white')
+		buttons[2].config(bg="black", fg='white')
 		points_gnd += 1
 
 	if buttons[3]["text"] == "0" and buttons[4]["text"] == "0" and buttons[5]["text"]  == "0":
-		buttons[3].config(bg="red")
-		buttons[4].config(bg="red")
-		buttons[5].config(bg="red")
+		buttons[3].config(bg="black", fg='white')
+		buttons[4].config(bg="black", fg='white')
+		buttons[5].config(bg="black", fg='white')
 		points_gnd += 1
 
 	if buttons[6]["text"] == "0" and buttons[7]["text"] == "0" and buttons[8]["text"]  == "0":
-		buttons[6].config(bg="red")
-		buttons[7].config(bg="red")
-		buttons[8].config(bg="red")
+		buttons[6].config(bg="black", fg='white')
+		buttons[7].config(bg="black", fg='white')
+		buttons[8].config(bg="black", fg='white')
 		points_gnd += 1
 
 	if buttons[0]["text"] == "0" and buttons[3]["text"] == "0" and buttons[6]["text"]  == "0":
-		buttons[0].config(bg="red")
-		buttons[3].config(bg="red")
-		buttons[6].config(bg="red")
+		buttons[0].config(bg="black", fg='white')
+		buttons[3].config(bg="black", fg='white')
+		buttons[6].config(bg="black", fg='white')
 		points_gnd += 1
 
 	if buttons[1]["text"] == "0" and buttons[4]["text"] == "0" and buttons[7]["text"]  == "0":
-		buttons[1].config(bg="red")
-		buttons[4].config(bg="red")
-		buttons[7].config(bg="red")
+		buttons[1].config(bg="black", fg='white')
+		buttons[4].config(bg="black", fg='white')
+		buttons[7].config(bg="black", fg='white')
 		points_gnd += 1
 
 	if buttons[2]["text"] == "0" and buttons[5]["text"] == "0" and buttons[8]["text"]  == "0":
-		buttons[2].config(bg="red")
-		buttons[5].config(bg="red")
-		buttons[8].config(bg="red")
+		buttons[2].config(bg="black", fg='white')
+		buttons[5].config(bg="black", fg='white')
+		buttons[8].config(bg="black", fg='white')
 		points_gnd += 1
 
 	if buttons[0]["text"] == "0" and buttons[4]["text"] == "0" and buttons[8]["text"]  == "0":
-		buttons[0].config(bg="red")
-		buttons[4].config(bg="red")
-		buttons[8].config(bg="red")
+		buttons[0].config(bg="black", fg='white')
+		buttons[4].config(bg="black", fg='white')
+		buttons[8].config(bg="black", fg='white')
 		points_gnd += 1
 
 	if buttons[2]["text"] == "0" and buttons[4]["text"] == "0" and buttons[6]["text"]  == "0":
-		buttons[2].config(bg="red")
-		buttons[4].config(bg="red")
-		buttons[6].config(bg="red")
+		buttons[2].config(bg="black", fg='white')
+		buttons[4].config(bg="black", fg='white')
+		buttons[6].config(bg="black", fg='white')
 		points_gnd += 1
 
 	#### Excited state
 	if buttons[0]["text"] == "1" and buttons[1]["text"] == "1" and buttons[2]["text"]  == "1":
-		buttons[0].config(bg="blue")
-		buttons[1].config(bg="blue")
-		buttons[2].config(bg="blue")
+		buttons[0].config(bg="white", fg="black")
+		buttons[1].config(bg="white", fg="black")
+		buttons[2].config(bg="white", fg="black")
 		points_exc += 1
 
 	if buttons[3]["text"] == "1" and buttons[4]["text"] == "1" and buttons[5]["text"]  == "1":
-		buttons[3].config(bg="blue")
-		buttons[4].config(bg="blue")
-		buttons[5].config(bg="blue")
+		buttons[3].config(bg="white", fg="black")
+		buttons[4].config(bg="white", fg="black")
+		buttons[5].config(bg="white", fg="black")
 		points_exc += 1
 
 	if buttons[6]["text"] == "1" and buttons[7]["text"] == "1" and buttons[8]["text"]  == "1":
-		buttons[6].config(bg="blue")
-		buttons[7].config(bg="blue")
-		buttons[8].config(bg="blue")
+		buttons[6].config(bg="white", fg="black")
+		buttons[7].config(bg="white", fg="black")
+		buttons[8].config(bg="white", fg="black")
 		points_exc += 1
 
 	if buttons[0]["text"] == "1" and buttons[3]["text"] == "1" and buttons[6]["text"]  == "1":
-		buttons[0].config(bg="blue")
-		buttons[3].config(bg="blue")
-		buttons[6].config(bg="blue")
+		buttons[0].config(bg="white", fg="black")
+		buttons[3].config(bg="white", fg="black")
+		buttons[6].config(bg="white", fg="black")
 		points_exc += 1
 
 	if buttons[1]["text"] == "1" and buttons[4]["text"] == "1" and buttons[7]["text"]  == "1":
-		buttons[1].config(bg="blue")
-		buttons[4].config(bg="blue")
-		buttons[7].config(bg="blue")
+		buttons[1].config(bg="white", fg="black")
+		buttons[4].config(bg="white", fg="black")
+		buttons[7].config(bg="white", fg="black")
 		points_exc += 1
 
 	if buttons[2]["text"] == "1" and buttons[5]["text"] == "1" and buttons[8]["text"]  == "1":
-		buttons[2].config(bg="blue")
-		buttons[5].config(bg="blue")
-		buttons[8].config(bg="blue")
+		buttons[2].config(bg="white", fg="black")
+		buttons[5].config(bg="white", fg="black")
+		buttons[8].config(bg="white", fg="black")
 		points_exc += 1
 
 	if buttons[0]["text"] == "1" and buttons[4]["text"] == "1" and buttons[8]["text"]  == "1":
-		buttons[0].config(bg="blue")
-		buttons[4].config(bg="blue")
-		buttons[8].config(bg="blue")
+		buttons[0].config(bg="white", fg="black")
+		buttons[4].config(bg="white", fg="black")
+		buttons[8].config(bg="white", fg="black")
 		points_exc += 1
 
 	if buttons[2]["text"] == "1" and buttons[4]["text"] == "1" and buttons[6]["text"]  == "1":
-		buttons[2].config(bg="blue")
-		buttons[4].config(bg="blue")
-		buttons[6].config(bg="blue")
+		buttons[2].config(bg="white", fg="black")
+		buttons[4].config(bg="white", fg="black")
+		buttons[6].config(bg="white", fg="black")
 		points_exc += 1
+
 
 	# Check if tie
 	if points_gnd > points_exc:
@@ -598,6 +592,7 @@ def checkwhowon():
 	elif points_gnd == points_exc:
 		messagebox.showinfo("Qtris", f"It is a tie with {points_gnd} points to {points_exc}!")
 		disable_all_buttons()
+
 
 
 root = tk.Tk()
@@ -622,7 +617,7 @@ targ_color_list = ["#1E8F78","#5CAD55","#B4CF66","#DBCB4F"]
 
 for i in range(3):
     for j in range(3):
-        button = Button(root, text='', font=("Helvetica", 20), height=3, width=6, bg="SystemButtonFace",name=f'{i}{j}')
+        button = Button(root, text='', font=("Helvetica", 20), height=3, width=6, bg="#95A3B3",name=f'{i}{j}')
         state = random_state()
         state_list.append(state)
         button['text'] = state2text(state) 
